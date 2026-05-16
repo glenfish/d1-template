@@ -14,7 +14,7 @@
 #
 # See README.md for the full walkthrough.
 
-name = "vault-test-api"
+name = "d1-template"
 main = "src/index.ts"
 compatibility_date = "2025-05-01"
 compatibility_flags = ["nodejs_compat"]
