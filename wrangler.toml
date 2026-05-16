@@ -1,0 +1,51 @@
+# Cloudflare Worker config for Task #227 — Cloud Vault single-user test.
+#
+# Provision the resources by hand (one shot) before `wrangler deploy`:
+#   wrangler r2 bucket create vault-test-bytes
+#   wrangler d1 create vault-test-meta            # copy the database_id below
+#   wrangler vectorize create vault-test-vectors --dimensions=384 --metric=cosine
+#   wrangler secret put VAULT_API_TOKEN           # paste the shared bearer token
+#
+# Then create the D1 schema:
+#   wrangler d1 execute vault-test-meta --remote --file=./schema.sql
+#
+# Deploy:
+#   wrangler deploy
+#
+# See README.md for the full walkthrough.
+
+name = "vault-test-api"
+main = "src/index.ts"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+[ai]
+binding = "AI"
+
+[[r2_buckets]]
+binding = "PDF_BUCKET"
+bucket_name = "vault-test-bytes"
+
+[[d1_databases]]
+binding = "META_DB"
+database_name = "vault-test-meta"
+# After `wrangler d1 create vault-test-meta`, paste the returned id here:
+database_id = "669933e3-cad2-49cc-bbda-efbb4c653120"
+
+[[vectorize]]
+binding = "VECTORS"
+index_name = "vault-test-vectors"
+
+# Public env (non-secret). The shared bearer token lives in
+# `VAULT_API_TOKEN` as a wrangler secret, NOT here.
+[vars]
+# Comma-separated origin list for CORS. Use `*` for the smoke-test if you
+# want any origin to be able to call the Worker (single-user test only).
+ALLOWED_ORIGINS = "*"
+# Hard cap on the single-PUT body size for /docs/:id/pdf. Larger PDFs are
+# rejected with a 413 so the client can fall back to the Local backend.
+PDF_SINGLE_PUT_MAX_BYTES = "99614720"  # 95 MiB
+# Embedding model id. Must match what the client recorded into row.modelId
+# for hits to be comparable across vault copies.
+EMBEDDING_MODEL = "@cf/baai/bge-small-en-v1.5"
+EMBEDDING_DIMENSIONS = "384"
