@@ -12,7 +12,7 @@
 # Deploy:
 #   wrangler deploy
 #
-# See README.md for the full walkthrough.
+# See README.md for the full walkthrough
 
 name = "d1-template"
 main = "src/index.ts"
