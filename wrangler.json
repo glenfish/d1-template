@@ -1,0 +1,16 @@
+{
+	"compatibility_date": "2025-10-08",
+	"main": "src/index.ts",
+	"name": "d1-template",
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "669933e3-cad2-49cc-bbda-efbb4c653120",
+			"database_name": "vault-test-meta"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}
